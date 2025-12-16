@@ -150,10 +150,12 @@ export class Model extends CollectionItem {
       this.data.model_key = value;
       const model_defaults = this.data.provider_models?.[this.data.model_key] || {};
       const adapter_defaults = this.ProviderAdapterClass.defaults || {};
+      // Remove model_key from adapter_defaults to prevent overwriting user's selection
+      const { model_key: _ignored, ...adapter_defaults_without_model_key } = adapter_defaults;
       delete this.data.test_passed;
       this.data = {
         ...this.data,
-        ...adapter_defaults,
+        ...adapter_defaults_without_model_key,
         ...model_defaults,
       };
     }
@@ -223,5 +225,14 @@ export class Model extends CollectionItem {
    */
   get opts() {
     return this.settings;
+  }
+
+  /**
+   * Re-render the settings UI for this model.
+   * Called by adapters after fetching/updating model data.
+   * Emits a model:settings_changed event that UI components can listen to.
+   */
+  re_render_settings() {
+    this.emit_event('model:settings_changed');
   }
 }
