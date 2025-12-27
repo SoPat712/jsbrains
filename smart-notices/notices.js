@@ -37,19 +37,9 @@ export const NOTICES = {
     button: {
       en: 'Release notes',
       callback: (scope) => {
-        window.open("https://github.com/brianpetro/obsidian-smart-connections/releases", "_blank");
+        window.open("https://github.com/SoPat712/obsidian-intelligent-linking/releases", "_blank");
       }
     }
-  },
-  new_early_access_version_available: {
-    en: 'A new early access version is available! (v{{version}})'
-  },
-  supporter_key_required: {
-    en: 'Supporter license key required for early access update'
-  },
-  revert_to_stable_release: {
-    en: 'Click "Check for Updates" in the community plugins tab and complete the update for Smart Connections to finish reverting to the stable release.',
-    timeout: 0
   },
   action_installed: {
     en: 'Installed action "{{name}}"'
