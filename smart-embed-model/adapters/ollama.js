@@ -92,7 +92,6 @@ export class SmartEmbedOllamaAdapter extends SmartEmbedModelApiAdapter {
     signup_url: null, // Not applicable for local instance
     batch_size: 30,
     models: {},
-    model_key: 'nomic-embed-text',
   };
 
   get host() {
@@ -204,7 +203,9 @@ export class SmartEmbedOllamaAdapter extends SmartEmbedModelApiAdapter {
       }
       const model_data = this.parse_model_data(models_raw);
       this.model_data = model_data;
-      this.model.re_render_settings();
+      if(typeof this.model.re_render_settings === 'function') {
+        this.model.re_render_settings(); // re-render settings to update models dropdown
+      }
       return model_data;
     }
     return this.model_data;
