@@ -249,7 +249,8 @@ export class SmartChatModelLmStudioAdapter extends SmartChatModelApiAdapter {
   }
 
   /**
-   * Test LM Studio authentication by requesting the models list.
+   * Validate LM Studio authentication by requesting the models list.
+   * Works for both authenticated and unauthenticated local servers.
    * @returns {Promise<boolean>}
    */
   async test_api_key() {

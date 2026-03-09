@@ -1,6 +1,8 @@
 import { SmartEntity } from "smart-entities";
+import { filter_by_frontmatter } from "smart-entities/utils/frontmatter_filter.js";
 import { compute_centroid, compute_medoid } from "smart-utils/geom.js";
 import { find_connections } from "./actions/find_connections.js";
+
 
 /**
  * @class SmartSource
@@ -200,6 +202,18 @@ export class SmartSource extends SmartEntity {
   }
 
   /**
+   * Filters source using base key filters and optional frontmatter include/exclude filters.
+   * @param {Object} [filter_opts={}]
+   * @param {Object} [filter_opts.frontmatter]
+   * @returns {boolean}
+   */
+  filter(filter_opts = {}) {
+    if (!super.filter(filter_opts)) return false;
+    if (!filter_opts.frontmatter) return true;
+    return filter_by_frontmatter(this.metadata || {}, filter_opts.frontmatter);
+  }
+
+  /**
    * ADAPTER METHODS
    */
   use_source_adapter(method, ...args) {
@@ -280,7 +294,7 @@ export class SmartSource extends SmartEntity {
    * Handles the destination as a string (new path) or entity (block or source).
    *
    * @async
-   * @param {string|Object|SmartEntity} entity_ref - The destination path or entity to move to.
+   * @param {string|SmartEntity} entity_ref - The destination path or entity to move to.
    * @throws {Error} If the entity reference is invalid.
    * @returns {Promise<void>} A promise that resolves when the move operation is complete.
    */
@@ -452,9 +466,18 @@ export class SmartSource extends SmartEntity {
   /**
    * Retrieves the paths of inlinks to this SmartSource.
    * @readonly
-   * @returns {Array<string>} An array of inlink paths.
+   * @returns {Array<LinkObject>} An array of inlink paths.
    */
-  get inlinks() { return Object.keys(this.collection.links?.[this.path] || {}); }
+  get inlinks() {
+    return Object.entries(this.collection.links?.[this.key] || {})
+      .map(([link_source_key, link_data]) => {
+        return {
+          source_key: link_source_key,
+          ...link_data,
+        };
+      })
+    ;
+  }
 
 
   get is_media() { return this.source_adapter.is_media || false; }
@@ -479,7 +502,7 @@ export class SmartSource extends SmartEntity {
   /**
    * Retrieves the outlink paths from the SmartSource.
    * @readonly
-   * @returns {Array<string>} An array of outlink paths.
+   * @returns {Array<import('smart-types').LinkObject>} An array of outlink objects.
    */
   get outlinks() {
     return (this.data.outlinks || [])
@@ -489,8 +512,10 @@ export class SmartSource extends SmartEntity {
         if(link_ref.startsWith("http")) return null;
         const link_path = this.fs.get_link_target_path(link_ref, this.file_path);
         return {
+          ...link,
           key: link_path,
           embedded: link.embedded || false,
+          source_key: this.key,
         };
       })
       .filter(link_path => link_path);

@@ -15,6 +15,9 @@ export class GeminiEmbedModelAdapter extends SmartEmbedModelApiAdapter {
     description: 'Google Gemini (API)',
     default_model: 'gemini-embedding-001',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents',
+    dims: 768,
+    max_tokens: 2048,
+    batch_size: 50,
   };
 
   /**
@@ -116,7 +119,7 @@ export class GeminiEmbedModelAdapter extends SmartEmbedModelApiAdapter {
   get models() {
     return {
       "gemini-embedding-001": {
-        "id": "models/gemini-embedding-001",
+        "id": "gemini-embedding-001",
         "batch_size": 50,
         "dims": 768,
         "max_tokens": 2048,
@@ -134,6 +137,47 @@ export class GeminiEmbedModelAdapter extends SmartEmbedModelApiAdapter {
       "x-goog-api-key": this.api_key
     };
   }
+  
+  backoff_wait_time = 5000; // initial backoff wait time in ms
+  backoff_factor = 1;
+  // no usaqge stats from LM Studio so need to estimate tokens
+  async embed_batch(inputs, retries = 0) {
+    if(smart_env.smart_sources.entities_vector_adapter.is_queue_halted) {
+      throw new Error("Embedding queue halted during backoff wait due to rate limit errors.");
+    }
+    const token_cts = inputs.map((item) => this.estimate_tokens(item.embed_input));
+    const resp = await super.embed_batch(inputs);
+    if(resp[0].error && resp[0].error.details && resp[0].error.details.code === 429){
+      console.warn("Rate limit error detected in Gemini embed_batch response.", resp);
+      if(retries > 3){
+        console.error("Max retries reached for rate limit errors.");
+        throw new Error("Max retries reached for rate limit errors.");
+      }
+      console.warn(resp[0].error.message);
+      // get prescribed wait time from resp[0].error.details.details[{retryDelay}]
+      // convert Ns to ms
+      const retry_detail = resp[0].error.details?.details?.find(d => d.retryDelay);
+      if(retry_detail.retryDelay){
+        const wait_time_ms = parseInt(retry_detail.retryDelay) * 1000 * 2; // convert to ms and double it for buffer
+        console.warn(`Using server-specified retry delay of ${wait_time_ms} ms`);
+        await new Promise((resolve) => setTimeout(resolve, wait_time_ms));
+        return await this.embed_batch(inputs, retries + 1);
+      }else{
+        // FALLBACK to generic backoff if no retryDelay provided
+        this.backoff_factor += 1;
+        console.warn(`Rate limit exceeded, backing off for ${this.backoff_wait_time * this.backoff_factor} ms`);
+        // backoff and retry from rate limit errors
+        await new Promise((resolve) => setTimeout(resolve, this.backoff_wait_time * this.backoff_factor));
+        return await this.embed_batch(inputs, retries + 1);
+      }
+    } else if (resp[0].error) {
+      console.error("Error in Gemini embed_batch response:", resp[0].error);
+      throw new Error(`Gemini embed_batch error: ${resp[0].error.message}`);
+    }
+    resp.forEach((item, idx) => { item.tokens = token_cts[idx] });
+    console.log("Gemini embed_batch response:", resp);
+    return resp;
+  }
 }
 
 /**
@@ -142,6 +186,10 @@ export class GeminiEmbedModelAdapter extends SmartEmbedModelApiAdapter {
  * @extends SmartEmbedModelRequestAdapter
  */
 class SmartEmbedGeminiRequestAdapter extends SmartEmbedModelRequestAdapter {
+  get model_id() {
+    let model_id = this.adapter.model.data.model_key;
+    return `models/${model_id}`;
+  }
   /**
    * Prepare request body for Gemini API
    * @returns {Object} Request body for API
@@ -172,6 +220,7 @@ class SmartEmbedGeminiRequestAdapter extends SmartEmbedModelRequestAdapter {
       }
     });
 
+    // console.log("Prepared Gemini embedding requests:", requests);
     return {
       requests,
     };
@@ -205,7 +254,7 @@ class SmartEmbedGeminiResponseAdapter extends SmartEmbedModelResponseAdapter {
       }
       return {
         vec: embedding.values,
-        tokens: 500, // not provided
+        tokens: null, // not provided
       };
     });
 

@@ -10,7 +10,7 @@ import { SmartContext } from './smart_context.js';
  * or data relevant to a specific use case (e.g., building a textual context for AI).
  */
 export class SmartContexts extends Collection {
-  static version = 0.1;
+  static version = '2.0.1';
   /**
    * new_context
    * @param {object} data
@@ -32,6 +32,7 @@ export class SmartContexts extends Collection {
    */
   static get default_settings() {
     return {
+      template_preset: 'xml_structured',
       template_before: '<context>\n{{FILE_TREE}}',
       template_after: '</context>',
     };
@@ -42,10 +43,6 @@ export class SmartContexts extends Collection {
       ...(this.env.config.actions.context_merge_template?.settings_config || {}),
     };
   }
-  get_ref(key) {
-    const collection = key.includes('#') ? this.env.smart_blocks : this.env.smart_sources;
-    return collection.get(key);
-  }
 }
 
 /* default export consumed by SmartEnv */
@@ -54,5 +51,5 @@ export default {
   collection_key : "smart_contexts",
   data_adapter   : AjsonSingleFileCollectionDataAdapter,
   item_type      : SmartContext,
-  version: 2,
+  version: SmartContexts.version,
 };

@@ -58,7 +58,7 @@ const append_entity_filters = (filter_opts, entity) => {
   const entity_key = entity.source_key || entity.key;
   if (entity_key) exclude_starts.push(entity_key);
   if (next.exclude_inlinks && Array.isArray(entity.inlinks) && entity.inlinks.length) {
-    exclude_starts = [...exclude_starts, ...entity.inlinks];
+    exclude_starts = [...exclude_starts, ...entity.inlinks.map(i => i.source_key)];
   }
   if (next.exclude_outlinks && Array.isArray(entity.outlinks) && entity.outlinks.length) {
     exclude_starts = [...exclude_starts, ...entity.outlinks.map(o => o.key)];
@@ -87,7 +87,7 @@ const append_entity_filters = (filter_opts, entity) => {
 /**
  * Normalizes filter options for the find_connections action.
  * Combines smart view settings with params and derives include/exclude filters based on the entity.
- * @param {Object} entity - The SmartEntity instance invoking the action.
+ * @param {import('smart-entities').SmartEntity} entity - The SmartEntity instance invoking the action.
  * @param {Object} [params={}] - Parameters passed to find_connections.
  * @returns {Object} Normalized filter options ready for nearest lookups.
  */
@@ -98,11 +98,19 @@ const create_find_connections_filter_opts = (entity, params = {}) => {
   return append_entity_filters(with_frontmatter, entity);
 };
 
+const ENTITIES_CONNECTIONS_CACHE = {};
+function connections_from_cache(cache_key) {
+  return ENTITIES_CONNECTIONS_CACHE[cache_key];
+}
+function connections_to_cache(cache_key, connections) {
+  ENTITIES_CONNECTIONS_CACHE[cache_key] = connections;
+}
+
 /**
  * Finds connections relevant to this entity based on provided parameters.
  * @async
  * @param {Object} [params={}] - Parameters for finding connections.
- * @returns {Array<{item:Object, score:number}>} An array of result objects with score and item.
+ * @returns {Array<{item: import('smart-entities').SmartEntity, score:number}>} An array of result objects with score and item.
  */
 async function find_connections(params = {}) {
   const limit = params.filter?.limit
@@ -113,14 +121,13 @@ async function find_connections(params = {}) {
   if (params.filter?.limit) delete params.filter.limit;
   if (params.limit) delete params.limit;
   const cache_key = this.key + murmur_hash_32_alphanumeric(JSON.stringify({ ...filter_opts, entity: null })); // no objects/instances in cache key
-  if (!this.env.connections_cache) this.env.connections_cache = {};
-  if (!this.env.connections_cache[cache_key]) {
-    const connections = (await this.nearest(filter_opts))
+  if (!ENTITIES_CONNECTIONS_CACHE[cache_key]) {
+    const connections = (await this.collection.entities_vector_adapter.nearest(this, filter_opts))
       .sort(sort_by_score)
       .slice(0, limit);
-    this.connections_to_cache(cache_key, connections);
+    connections_to_cache(cache_key, connections);
   }
-  return this.connections_from_cache(cache_key);
+  return connections_from_cache(cache_key);
 }
 find_connections.action_type = "connections";
 export { find_connections, create_find_connections_filter_opts };
