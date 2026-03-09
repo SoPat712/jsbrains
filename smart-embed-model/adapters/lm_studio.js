@@ -4,26 +4,48 @@ import {
   SmartEmbedModelResponseAdapter,
 } from "./_api.js";
 
+function get_lm_studio_models_array(list) {
+  if (Array.isArray(list?.models)) return list.models;
+  if (Array.isArray(list?.data)) return list.data;
+  return [];
+}
+
+function get_lm_studio_model_id(model = {}) {
+  return model.id || model.identifier || model.key || model.model_id || '';
+}
+
 /**
  * Normalize LM Studio model
- * Pure and reusable.
- * @param {Object} list - Response from LM Studio `/v1/models` endpoint
+ * @param {Object} list - Response from LM Studio `/api/v1/models` or `/v1/models`
  * @param {string} [adapter_key='lm_studio'] - Adapter identifier
  * @returns {Object} Parsed models map
  */
 export function parse_lm_studio_models(list, adapter_key = 'lm_studio') {
-  if (list.object !== "list" || !Array.isArray(list.data)) {
+  const models = get_lm_studio_models_array(list);
+  if (models.length === 0) {
     return { _: { id: "No models found." } };
   }
-  console.log("LM Studio models", list);
-  return list.data
-    .filter(m => m.id && m.type === "embeddings")
+  return models
+    .filter((model) => {
+      const type = `${model.type || ''}`.toLowerCase();
+      return type === 'embedding' || type === 'embeddings';
+    })
     .reduce((acc, m) => {
-      acc[m.id] = {
-        id: m.id,
-        model_name: m.id,
-        max_tokens: m.loaded_context_length || 512,
-        description: `LM Studio model: ${m.id}`,
+      const id = get_lm_studio_model_id(m);
+      if (!id) return acc;
+      const loaded = Array.isArray(m.loaded_instances) ? m.loaded_instances[0] : null;
+      const max_tokens = loaded?.max_context_length
+        || loaded?.loaded_context_length
+        || m.max_context_length
+        || m.loaded_context_length
+        || 512
+      ;
+      acc[id] = {
+        id,
+        name: m.display_name || m.name || id,
+        model_name: id,
+        max_tokens,
+        description: `LM Studio model: ${id}`,
         adapter: adapter_key,
       };
       return acc;
@@ -38,12 +60,10 @@ export class LmStudioEmbedModelAdapter extends SmartEmbedModelApiAdapter {
     description: "LM Studio",
     type: "API",
     host: "http://localhost:1234",
-    // endpoint: "/v1/embeddings",
-    endpoint: "/api/v0/embeddings",
-    models_endpoint: "/api/v0/models",
+    endpoint: "/v1/embeddings",
+    models_endpoint: "/api/v1/models",
     default_model: "",               // user picks from dropdown
     streaming: false,
-    api_key: "na",                   // not used
     batch_size: 10,
     max_tokens: 512,
   };
@@ -68,9 +88,19 @@ export class LmStudioEmbedModelAdapter extends SmartEmbedModelApiAdapter {
   }
 
   get settings_config() {
-    // Start with the base fields then prune / add.
     const cfg = { ...super.settings_config };
-    delete cfg["[ADAPTER].api_key"];
+    cfg["[ADAPTER].host"] = {
+      name: 'LM Studio host',
+      type: 'text',
+      description: 'Base URL for the LM Studio local server.',
+      default: this.constructor.defaults.host,
+    };
+    cfg["[ADAPTER].api_key"] = {
+      name: 'API Key (optional)',
+      type: 'password',
+      description: 'Optional unless API authentication is enabled in LM Studio.',
+      placeholder: 'Enter LM Studio API key',
+    };
     cfg["[ADAPTER].refresh_models"] = {
       name: 'Refresh Models',
       type: "button",
@@ -100,13 +130,33 @@ export class LmStudioEmbedModelAdapter extends SmartEmbedModelApiAdapter {
     return cfg;
   }
 
+  get configured_api_key() {
+    return (this.model.data?.api_key || '').trim();
+  }
+
+  get api_key() {
+    return this.configured_api_key || 'lm-studio';
+  }
+
+  prepare_request_headers() {
+    return {
+      "Content-Type": "application/json",
+      ...(this.configured_api_key ? { Authorization: `Bearer ${this.configured_api_key}` } : {}),
+    };
+  }
+
   async get_models(refresh = false) {
     if (!refresh && this.model.data.provider_models) return this.model.data.provider_models;
 
     const resp = await this.http_adapter.request({
       url: this.models_endpoint,
       method: "GET",
+      headers: this.prepare_request_headers(),
     });
+    const status = await resp.status();
+    if (status < 200 || status >= 300) {
+      throw new Error(`LM Studio model request failed with status ${status}`);
+    }
     const raw = await resp.json();
     const parsed = this.parse_model_data(raw);
     this.model.data.provider_models = parsed;

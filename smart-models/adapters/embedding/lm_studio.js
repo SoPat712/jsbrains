@@ -15,6 +15,22 @@ export class LmStudioEmbeddingModelAdapter extends LmStudioEmbedModelAdapter {
     return this._http_adapter;
   }
 }
+
+export const settings_config = {
+  host: {
+    name: 'LM Studio host',
+    type: 'text',
+    description: 'Base URL for the LM Studio local server.',
+    default: 'http://localhost:1234',
+  },
+  api_key: {
+    name: 'API Key (optional)',
+    type: 'password',
+    description: 'Optional unless API authentication is enabled in LM Studio.',
+  },
+};
+
 export default {
   class: LmStudioEmbeddingModelAdapter,
+  settings_config,
 };
