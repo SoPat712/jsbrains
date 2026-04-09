@@ -1,1 +1,1 @@
-MOVED TO https://github.com/brianpetro/obsidian-smart-env
+MOVED TO https://github.com/SoPat712/obsidian-intelligent-linking

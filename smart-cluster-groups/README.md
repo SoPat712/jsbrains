@@ -1,6 +1,6 @@
 # smart-cluster-groups
 
-Provides higher-level "group of clusters" logic on top of [smart-clusters](../smart-clusters) and [smart-collections](https://github.com/brianpetro/jsbrains/tree/main/smart-collections). A `ClusterGroup` manages multiple clusters together, along with group-wide or per-cluster filter data, snapshots, and the ability to clone groups.
+Provides higher-level "group of clusters" logic on top of [smart-clusters](../smart-clusters) and [smart-collections](https://github.com/SoPat712/obsidian-intelligent-linking). A `ClusterGroup` manages multiple clusters together, along with group-wide or per-cluster filter data, snapshots, and the ability to clone groups.
 
 ## Overview
 

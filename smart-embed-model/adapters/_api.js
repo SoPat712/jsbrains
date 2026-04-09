@@ -5,7 +5,7 @@ import { Tiktoken } from "js-tiktoken/lite";
 import { fetch_json_cached } from '../utils/fetch_cache.js';
 import { normalize_error } from 'smart-utils/normalize_error.js';
 
-const CL100K_URL = 'https://raw.githubusercontent.com/brianpetro/jsbrains/refs/heads/main/smart-embed-model/cl100k_base.json';
+const CL100K_URL = 'https://raw.githubusercontent.com/SoPat712/obsidian-intelligent-linking/refs/heads/main/jsbrains/smart-embed-model/cl100k_base.json';
 
 /**
  * Base adapter class for API-based embedding models (e.g., OpenAI)

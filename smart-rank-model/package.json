@@ -19,16 +19,16 @@
   ],
   "repository": {
     "type": "git",
-    "url": "brianpetro/jsbrains"
+    "url": "SoPat712/obsidian-intelligent-linking"
   },
   "bugs": {
-    "url": "https://github.com/brianpetro/jsbrains/issues"
+    "url": "https://github.com/SoPat712/obsidian-intelligent-linking"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.1.1",
     "smart-model": "*"
   },
-  "homepage": "https://jsbrains.org",
+  "homepage": "https://github.com/SoPat712/obsidian-intelligent-linking",
   "devDependencies": {
     "ava": "^6.0.1",
     "dotenv": "^16.3.1",

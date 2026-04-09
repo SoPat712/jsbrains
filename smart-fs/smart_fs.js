@@ -58,7 +58,7 @@ import { fuzzy_search } from './utils/fuzzy_search.js';
  * // Write to a file with automatic exclusion handling
  * await smart_fs.write('output.txt', 'Hello, SmartFs!');
  * 
- * @see {@link https://github.com/brianpetro/js-brains} for more information and updates.
+ * @see {@link https://github.com/SoPat712/obsidian-intelligent-linking} for more information and updates.
  */
 class SmartFs {
   /**

@@ -1,6 +1,6 @@
 # Smart Entities
 
-Smart Entities is a powerful module that provides classes for managing content with embeddings. It was originally designed for use with markdown files in the [Smart Connections](https://github.com/brianpetro/obsidian-smart-connections) Obsidian plugin, but it's easily extendable to other file types and use cases.
+Smart Entities is a powerful module that provides classes for managing content with embeddings. It was originally designed for use with markdown files in the [Smart Connections](https://github.com/SoPat712/obsidian-intelligent-linking) Obsidian plugin, but it's easily extendable to other file types and use cases.
 
 ## Installation
 

@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "brianpetro/jsbrains"
+    "url": "SoPat712/obsidian-intelligent-linking"
   },
   "keywords": [
     "collection",
@@ -21,9 +21,9 @@
     "LTM"
   ],
   "bugs": {
-    "url": "https://github.com/brianpetro/jsbrains/issues"
+    "url": "https://github.com/SoPat712/obsidian-intelligent-linking"
   },
-  "homepage": "https://jsbrains.org",
+  "homepage": "https://github.com/SoPat712/obsidian-intelligent-linking",
   "dependencies": {
     "smart-utils": "*"
   },

@@ -8,15 +8,15 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "brianpetro/jsbrains"
+    "url": "SoPat712/obsidian-intelligent-linking"
   },
   "bugs": {
-    "url": "https://github.com/brianpetro/jsbrains/issues"
+    "url": "https://github.com/SoPat712/obsidian-intelligent-linking"
   },
   "scripts": {
     "test": "npx ava --verbose"
   },
-  "homepage": "https://jsbrains.org",
+  "homepage": "https://github.com/SoPat712/obsidian-intelligent-linking",
   "dependencies": {
     "smart-blocks": "*",
     "smart-collections": "*",

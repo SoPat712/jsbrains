@@ -6,54 +6,54 @@ JS Brains is a collection of lightweight modules for building intelligent applic
 
 ## Top-Level Overview
 
-- [**smart-environment/**](https://github.com/brianpetro/jsbrains/tree/main/smart-environment#readme)  
+- [**smart-environment/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
   Manages global runtime configuration, settings loading/saving, and provides a context to integrate collections, file systems, and model adapters.
 
-- [**smart-collections/**](https://github.com/brianpetro/jsbrains/tree/main/smart-collections#readme)  
+- [**smart-collections/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
   Generalized collection framework for persisting items (sources, blocks, messages) using JSON, AJSON, or SQLite, offering CRUD, filtering, and batch processing utilities.
-  - [**smart-entities/**](https://github.com/brianpetro/jsbrains/tree/main/smart-entities#readme)  
+  - [**smart-entities/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
     Adds embeddings, semantic searches, and nearest-neighbor lookups for items within collections, enhancing entities with vector-based intelligence.
-    - [**smart-sources/**](https://github.com/brianpetro/jsbrains/tree/main/smart-sources#readme)
+    - [**smart-sources/**](https://github.com/SoPat712/obsidian-intelligent-linking)
       Handles structured documents (sources) and their embedded blocks, integrating with embeddings and semantic lookups.
-    - [**smart-blocks/**](https://github.com/brianpetro/jsbrains/tree/main/smart-blocks#readme)
+    - [**smart-blocks/**](https://github.com/SoPat712/obsidian-intelligent-linking)
       Manages block-level granularity within sources, representing distinct sections or pieces of content for targeted embedding, search, and tool integration.
 
-- [**smart-model/**](https://github.com/brianpetro/jsbrains/tree/main/smart-model#readme)  
+- [**smart-model/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
   Base classes for model abstractions and adapter management, setting a pattern for uniform access to various AI model types.
-  - [**smart-chat-model/**](https://github.com/brianpetro/jsbrains/tree/main/smart-chat-model#readme)  
+  - [**smart-chat-model/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
     Provides a unified API for chat-completion models (OpenAI, Anthropic, Cohere), handling streaming responses, function calling, and multi-provider fallback.
-  - [**smart-embed-model/**](https://github.com/brianpetro/jsbrains/tree/main/smart-embed-model#readme)  
+  - [**smart-embed-model/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
     Offers a uniform interface to embedding models (OpenAI, Transformers, Ollama), allowing generation of vector embeddings and efficient semantic searches.
-  - [**smart-rank-model/**](https://github.com/brianpetro/jsbrains/tree/main/smart-rank-model#readme)  
+  - [**smart-rank-model/**](https://github.com/SoPat712/obsidian-intelligent-linking)  
     Specializes in ranking documents using LLM-based rerankers (Cohere, local Transformer models), enabling sorting of candidate answers or documents by relevance.
 
-- [**smart-fs/**](https://github.com/brianpetro/jsbrains/tree/main/smart-fs#readme)
+- [**smart-fs/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Abstracts file system operations through multiple adapters (Node.js FS, Obsidian Vault, Web File System Access), adding support for ignore patterns, AJSON, and other features.
 
-- [**smart-actions/**](https://github.com/brianpetro/jsbrains/tree/main/smart-actions#readme)
+- [**smart-actions/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Registers and executes reusable actions, enabling automation workflows and command dispatching across modules.
 
-- [**smart-contexts/**](https://github.com/brianpetro/jsbrains/tree/main/smart-contexts#readme)
+- [**smart-contexts/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Builds and merges context templates for prompts or configuration generation, supporting variable interpolation and adapters.
 
-- [**smart-settings/**](https://github.com/brianpetro/jsbrains/tree/main/smart-settings#readme)
+- [**smart-settings/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Persists user-facing configuration with schema-driven forms and hot-reload support.
 
-- [**smart-view/**](https://github.com/brianpetro/jsbrains/tree/main/smart-view#readme)
+- [**smart-view/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Handles UI and rendering tasks for settings interfaces, markdown previewing, and icon sets, with adapters tailored to Node.js, Obsidian, or browser environments.
-- [**smart-events/**](https://github.com/brianpetro/jsbrains/tree/main/smart-events#readme)
+- [**smart-events/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Event bus coordinating module communication.
 
-- [**smart-settings/**](https://github.com/brianpetro/jsbrains/tree/main/smart-settings#readme)
+- [**smart-settings/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Centralized configuration accessible across modules.
 
-- [**smart-groups/**](https://github.com/brianpetro/jsbrains/tree/main/smart-groups#readme)
+- [**smart-groups/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Organizes items into labeled groups with vector-based summaries.
 
-- [**smart-directories/**](https://github.com/brianpetro/jsbrains/tree/main/smart-directories#readme)
+- [**smart-directories/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Generates directory structures from collections and sources.
 
-- [**smart-notices/**](https://github.com/brianpetro/jsbrains/tree/main/smart-notices#readme)
+- [**smart-notices/**](https://github.com/SoPat712/obsidian-intelligent-linking)
   Delivers predefined notices through adapters to the DOM.
 
 

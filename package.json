@@ -4,7 +4,7 @@
   "description": "A collection of smart modules for building brains in JavaScript.",
   "repository": {
     "type": "git",
-    "url": "brianpetro/jsbrains"
+    "url": "SoPat712/obsidian-intelligent-linking"
   },
   "keywords": [
     "ai",
@@ -16,9 +16,9 @@
   "author": "Brian Joseph Petro (🌴 Brian)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brianpetro/jsbrains/issues"
+    "url": "https://github.com/SoPat712/obsidian-intelligent-linking"
   },
-  "homepage": "https://jsbrains.org",
+  "homepage": "https://github.com/SoPat712/obsidian-intelligent-linking",
   "devDependencies": {
     "jsdoc": "^4.0.2",
     "smart-types": "*"

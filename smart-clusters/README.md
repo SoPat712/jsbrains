@@ -1,6 +1,6 @@
 # smart-clusters
 
-Provides utilities for creating and managing clusters of items (e.g., embeddings or other vector-based items). It extends the [smart-collections](https://github.com/brianpetro/jsbrains/tree/main/smart-collections) module by adding `Cluster` items (single logical clusters) and a `Clusters` collection.
+Provides utilities for creating and managing clusters of items (e.g., embeddings or other vector-based items). It extends the [smart-collections](https://github.com/SoPat712/obsidian-intelligent-linking) module by adding `Cluster` items (single logical clusters) and a `Clusters` collection.
 
 ## Overview
 

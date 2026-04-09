@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JS Brains - Smart Chat Model - Universal Adapter Demo</title>
-    <meta property="og:image" content="https://brianpetro.github.io/jsbrains/sample-web.gif">
+    <meta property="og:image" content="./sample-web.gif">
     <style>
         :root {
             --lch-black: 0% 0 0;
@@ -104,7 +104,7 @@
 <body>
     <h1>JS Brains - Smart Chat Model</h1>
     <h2>Universal Adapter Demo</h2>
-    <p>A seriously simple sample app using JS Brains Smart Chat Model to interact with multiple LLMs in less than 200 lines of code.<br>You can find the source code for this app <a href="https://github.com/brianpetro/jsbrains/tree/main/smart-chat-model" target="_blank">here</a>.</p>
+    <p>A seriously simple sample app using JS Brains Smart Chat Model to interact with multiple LLMs in less than 200 lines of code.<br>You can find the source code for this app <a href="https://github.com/SoPat712/obsidian-intelligent-linking" target="_blank">here</a>.</p>
     <div>
         <label for="model-select">Model:</label>
         <select id="model-select">
@@ -120,11 +120,17 @@
         <input type="text" id="user-input" placeholder="Type your message here..." onkeydown="if (event.key === 'Enter') send_message()">
         <button id="send" onclick="send_message()">&gt;</button>
     </div>
-    <script src="https://github.com/brianpetro/jsbrains/releases/download/0.0.1/smart_chat_model_web.js"></script>
+    <script src="./smart_chat_model_web.js"></script>
     <script>
-        const { SmartChatModel } = smart_chat_model;
         let chat_model;
         document.addEventListener('DOMContentLoaded', function() {
+            if (!window.smart_chat_model?.SmartChatModel) {
+                const missing = document.createElement('p');
+                missing.textContent = 'Build or provide ./smart_chat_model_web.js to run this demo locally.';
+                document.body.insertBefore(missing, document.getElementById('chat'));
+                return;
+            }
+            const { SmartChatModel } = smart_chat_model;
             const models = SmartChatModel.models;
             const model_selector = document.getElementById('model-select');
             for (const key in models) {
